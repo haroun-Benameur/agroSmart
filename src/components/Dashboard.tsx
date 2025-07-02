@@ -3,8 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { Droplets, Thermometer, CloudRain, AlertTriangle } from "lucide-react";
 import SensorCard from "./SensorCard";
 import ChatBot from "./ChatBot";
+import Navbar from "./Navbar";
 
-const Dashboard = () => {
+interface DashboardProps {
+  onLogout: () => void;
+}
+
+const Dashboard = ({ onLogout }: DashboardProps) => {
   // Données simulées des capteurs
   const sensorData = {
     soilHumidity: 28,
@@ -24,17 +29,20 @@ const Dashboard = () => {
   const humidityStatus = getHumidityStatus(sensorData.soilHumidity);
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
-            AgroSmart Irrigation
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Gestion intelligente de l'irrigation agricole
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      <Navbar onLogout={onLogout} title="AgroSmart Irrigation" />
+      
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+              AgroSmart Irrigation
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Gestion intelligente de l'irrigation agricole
+            </p>
+          </div>
 
         {/* Alert Banner */}
         <Card className="border-l-4 border-l-warning-orange bg-warning-orange-light/30">
@@ -60,7 +68,7 @@ const Dashboard = () => {
         </Card>
 
         {/* Sensor Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <SensorCard
             title="Humidité du Sol"
             value={`${sensorData.soilHumidity}%`}

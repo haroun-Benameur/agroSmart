@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Droplets, Mail, Lock, User } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface AuthCardProps {
   onLogin: () => void;
@@ -32,25 +33,30 @@ const AuthCard = ({ onLogin }: AuthCardProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-irrigation flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-irrigation dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
+        {/* Theme Toggle */}
+        <div className="absolute top-6 right-6">
+          <ThemeToggle />
+        </div>
+        
         {/* Logo et titre */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-glow">
               <Droplets className="h-8 w-8 text-irrigation-blue" />
             </div>
-            <h1 className="text-3xl font-bold text-white">AgroSmart</h1>
+            <h1 className="text-3xl font-bold text-white dark:text-white">AgroSmart</h1>
           </div>
-          <p className="text-white/80 text-lg">
+          <p className="text-white/80 dark:text-white/80 text-lg">
             Gestion intelligente de l'irrigation
           </p>
-          <Badge variant="outline" className="mt-2 border-white/30 text-white">
+          <Badge variant="outline" className="mt-2 border-white/30 text-white dark:border-white/30 dark:text-white">
             Version 1.0
           </Badge>
         </div>
 
-        <Card className="bg-white/95 backdrop-blur-sm shadow-medium">
+        <Card className="bg-card/95 backdrop-blur-sm shadow-soft border-border">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl text-foreground">
               {isLogin ? "Connexion" : "Créer un compte"}
@@ -182,7 +188,7 @@ const AuthCard = ({ onLogin }: AuthCardProps) => {
           </CardContent>
         </Card>
 
-        <p className="text-center text-white/60 text-xs mt-6">
+        <p className="text-center text-white/60 dark:text-white/60 text-xs mt-6">
           © 2024 AgroSmart - Irrigation intelligente pour l'agriculture durable
         </p>
       </div>

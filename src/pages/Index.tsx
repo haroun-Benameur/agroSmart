@@ -58,6 +58,52 @@ const mockTerrainData = {
       { date: "2024-01-07", humidity: 35, temperature: 23, ph: 5.9 },
     ],
   },
+  "2": {
+    id: "2",
+    name: "Parcelle Sud",
+    superficie: 800,
+    location: "Secteur B - Sud",
+    sensorData: {
+      soilHumidity: 65,
+      soilTemperature: 24,
+      ambientTemperature: 27,
+      weatherTemperature: 28,
+      rainProbability: 30,
+      soilPH: 6.5,
+    },
+    historicalData: [
+      { date: "2024-01-01", humidity: 58, temperature: 22, ph: 6.4 },
+      { date: "2024-01-02", humidity: 62, temperature: 23, ph: 6.5 },
+      { date: "2024-01-03", humidity: 59, temperature: 25, ph: 6.3 },
+      { date: "2024-01-04", humidity: 65, temperature: 24, ph: 6.5 },
+      { date: "2024-01-05", humidity: 68, temperature: 21, ph: 6.6 },
+      { date: "2024-01-06", humidity: 64, temperature: 23, ph: 6.4 },
+      { date: "2024-01-07", humidity: 65, temperature: 24, ph: 6.5 },
+    ],
+  },
+  "3": {
+    id: "3",
+    name: "Terrain Est",
+    superficie: 950,
+    location: "Secteur C - Est",
+    sensorData: {
+      soilHumidity: 22,
+      soilTemperature: 26,
+      ambientTemperature: 29,
+      weatherTemperature: 30,
+      rainProbability: 15,
+      soilPH: 5.2,
+    },
+    historicalData: [
+      { date: "2024-01-01", humidity: 35, temperature: 24, ph: 5.3 },
+      { date: "2024-01-02", humidity: 28, temperature: 25, ph: 5.2 },
+      { date: "2024-01-03", humidity: 25, temperature: 26, ph: 5.1 },
+      { date: "2024-01-04", humidity: 22, temperature: 26, ph: 5.2 },
+      { date: "2024-01-05", humidity: 19, temperature: 27, ph: 5.0 },
+      { date: "2024-01-06", humidity: 24, temperature: 25, ph: 5.1 },
+      { date: "2024-01-07", humidity: 22, temperature: 26, ph: 5.2 },
+    ],
+  },
 };
 
 const Index = () => {
@@ -66,6 +112,11 @@ const Index = () => {
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setSelectedTerrain(null);
   };
 
   const handleSelectTerrain = (terrainId: string) => {
@@ -85,6 +136,7 @@ const Index = () => {
       <TerrainDashboard 
         terrain={mockTerrainData[selectedTerrain as keyof typeof mockTerrainData]}
         onBack={handleBackToList}
+        onLogout={handleLogout}
       />
     );
   }
@@ -93,6 +145,7 @@ const Index = () => {
     <TerrainList 
       terrains={mockTerrains}
       onSelectTerrain={handleSelectTerrain}
+      onLogout={handleLogout}
     />
   );
 };
