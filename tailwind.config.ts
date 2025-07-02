@@ -61,7 +61,33 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				agriculture: {
+					green: 'hsl(var(--agriculture-green))',
+					'green-light': 'hsl(var(--agriculture-green-light))'
+				},
+				irrigation: {
+					blue: 'hsl(var(--irrigation-blue))',
+					'blue-light': 'hsl(var(--irrigation-blue-light))'
+				},
+				warning: {
+					orange: 'hsl(var(--warning-orange))',
+					'orange-light': 'hsl(var(--warning-orange-light))'
+				},
+				alert: {
+					red: 'hsl(var(--alert-red))',
+					'red-light': 'hsl(var(--alert-red-light))'
 				}
+			},
+			backgroundImage: {
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-irrigation': 'var(--gradient-irrigation)',
+				'gradient-card': 'var(--gradient-card)'
+			},
+			boxShadow: {
+				'soft': 'var(--shadow-soft)',
+				'medium': 'var(--shadow-medium)',
+				'glow': 'var(--shadow-glow)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
