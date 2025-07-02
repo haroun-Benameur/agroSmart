@@ -12,6 +12,7 @@ interface SensorData {
   weatherTemperature: number;
   rainProbability: number;
   area: number;
+  soilPH: number;
 }
 
 interface Message {
@@ -37,23 +38,33 @@ const ChatBot = ({ sensorData }: ChatBotProps) => {
   const [inputMessage, setInputMessage] = useState("");
 
   const getIrrigationRecommendation = () => {
-    const { soilHumidity, area, rainProbability } = sensorData;
+    const { soilHumidity, area, rainProbability, soilPH } = sensorData;
     
     let recommendation = "";
-    let shouldWater = false;
+    let phAdvice = "";
+
+    // pH recommendations
+    if (soilPH < 5.5) {
+      phAdvice = " Votre sol est trop acide (pH " + soilPH.toFixed(1) + "), envisagez un apport de chaux.";
+    } else if (soilPH > 8.0) {
+      phAdvice = " Votre sol est trop basique (pH " + soilPH.toFixed(1) + "), ajoutez de la matière organique.";
+    } else if (soilPH < 6.0) {
+      phAdvice = " Votre sol est légèrement acide (pH " + soilPH.toFixed(1) + "), surveillez l'évolution.";
+    } else if (soilPH > 7.5) {
+      phAdvice = " Votre sol est légèrement basique (pH " + soilPH.toFixed(1) + "), surveillez l'évolution.";
+    }
 
     if (soilHumidity > 60) {
-      recommendation = "💧 **Non, n'arrosez pas.** L'humidité du sol est optimale à " + soilHumidity + "%. Votre terrain n'a pas besoin d'eau actuellement.";
+      recommendation = "💧 **Non, n'arrosez pas.** L'humidité du sol est optimale à " + soilHumidity + "%. Votre terrain n'a pas besoin d'eau actuellement." + phAdvice;
     } else if (soilHumidity < 30 && rainProbability < 30) {
-      shouldWater = true;
       const waterAmount = Math.round((area * 12) / 1000); // 12L/m² converti en m³
-      recommendation = "💧 **Oui, arrosez maintenant.** L'humidité est critiquement basse (" + soilHumidity + "%) et peu de pluie prévue (" + rainProbability + "%). Arrosez environ " + waterAmount + " m³ pour vos " + area.toLocaleString() + " m².";
+      recommendation = "💧 **Oui, arrosez maintenant.** L'humidité est critiquement basse (" + soilHumidity + "%) et peu de pluie prévue (" + rainProbability + "%). Arrosez environ " + waterAmount + " m³ pour vos " + area.toLocaleString() + " m²." + phAdvice;
     } else if (soilHumidity < 30 && rainProbability >= 30) {
-      recommendation = "💧 **Attendez avant d'arroser.** L'humidité est basse (" + soilHumidity + "%) mais " + rainProbability + "% de pluie prévue. Surveillez la météo.";
+      recommendation = "💧 **Attendez avant d'arroser.** L'humidité est basse (" + soilHumidity + "%) mais " + rainProbability + "% de pluie prévue. Surveillez la météo." + phAdvice;
     } else if (rainProbability >= 70) {
-      recommendation = "💧 **Attendez avant d'arroser.** Humidité à " + soilHumidity + "% et forte probabilité de pluie (" + rainProbability + "%). Économisez l'eau.";
+      recommendation = "💧 **Attendez avant d'arroser.** Humidité à " + soilHumidity + "% et forte probabilité de pluie (" + rainProbability + "%). Économisez l'eau." + phAdvice;
     } else {
-      recommendation = "💧 **Surveillez l'évolution.** Humidité à " + soilHumidity + "%. Vérifiez dans quelques heures selon l'évolution météo.";
+      recommendation = "💧 **Surveillez l'évolution.** Humidité à " + soilHumidity + "%. Vérifiez dans quelques heures selon l'évolution météo." + phAdvice;
     }
 
     return recommendation;
@@ -81,10 +92,13 @@ const ChatBot = ({ sensorData }: ChatBotProps) => {
         botResponse = getIrrigationRecommendation();
       } else if (inputMessage.toLowerCase().includes("humidité")) {
         botResponse = `L'humidité actuelle de votre sol est de ${sensorData.soilHumidity}%. ${sensorData.soilHumidity > 60 ? "C'est optimal !" : sensorData.soilHumidity < 30 ? "C'est trop bas, attention !" : "C'est dans la moyenne."}`;
+      } else if (inputMessage.toLowerCase().includes("ph") || inputMessage.toLowerCase().includes("acidité")) {
+        const phStatus = sensorData.soilPH >= 6.0 && sensorData.soilPH <= 7.5 ? "équilibré" : sensorData.soilPH < 5.5 ? "trop acide" : sensorData.soilPH > 8.0 ? "trop basique" : sensorData.soilPH < 6.0 ? "légèrement acide" : "légèrement basique";
+        botResponse = `Le pH de votre sol est de ${sensorData.soilPH.toFixed(1)}, ce qui est ${phStatus}. ${sensorData.soilPH < 5.5 ? "Ajoutez de la chaux pour corriger l'acidité." : sensorData.soilPH > 8.0 ? "Apportez de la matière organique pour équilibrer." : ""}`;
       } else if (inputMessage.toLowerCase().includes("météo") || inputMessage.toLowerCase().includes("pluie")) {
         botResponse = `Prévisions météo : ${sensorData.weatherTemperature}°C aujourd'hui, ${sensorData.rainProbability}% de probabilité de pluie demain.`;
       } else {
-        botResponse = "Je peux vous aider avec l'irrigation de votre terrain. Demandez-moi si vous devez arroser, ou des informations sur l'humidité et la météo.";
+        botResponse = "Je peux vous aider avec l'irrigation de votre terrain. Demandez-moi si vous devez arroser, ou des informations sur l'humidité, le pH et la météo.";
       }
 
       const botMessage: Message = {
@@ -192,6 +206,17 @@ const ChatBot = ({ sensorData }: ChatBotProps) => {
             className="text-xs"
           >
             Humidité actuelle ?
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setInputMessage("Quel est le pH de mon sol ?");
+              setTimeout(handleSendMessage, 100);
+            }}
+            className="text-xs"
+          >
+            pH du sol ?
           </Button>
         </div>
       </CardContent>
